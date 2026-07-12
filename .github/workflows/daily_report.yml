@@ -1,0 +1,44 @@
+name: Daily SignalBot Report
+
+on:
+  schedule:
+    # 06:00 UTC = 08:00 Uhr in Deutschland (Sommerzeit)
+    - cron: '0 6 * * *'
+
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Repository auschecken
+        uses: actions/checkout@v4
+
+      - name: Python einrichten
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Abhängigkeiten installieren
+        run: |
+          pip install -r requirements.txt
+
+      - name: Dashboard erzeugen
+        run: |
+          python src/generate_report.py
+
+      - name: Änderungen committen
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+          git add docs/index.html
+
+          git diff --cached --quiet || (
+            git commit -m "Automatisches Dashboard-Update"
+            git push
+          )

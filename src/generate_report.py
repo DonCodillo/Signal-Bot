@@ -4,14 +4,9 @@ from ta.momentum import RSIIndicator
 from ta.trend import SMAIndicator
 
 
-WATCHLIST = {
-    "Amazon": "AMZN",
-    "Telekom": "DTE.DE",
-    "Kontron": "KTN.DE",
-    "Veolia": "VIE.PA",
-    "Viking Therapeutics": "VKTX",
-    "Akebia Therapeutics": "AKBA"
-}
+from data import load_watchlist
+
+WATCHLIST = load_watchlist()
 
 
 def analyze_stock(ticker):
